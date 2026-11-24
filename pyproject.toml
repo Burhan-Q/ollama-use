@@ -1,0 +1,90 @@
+[project]
+name = "ollama-use"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx2>=2.16.0",  # docs: https://pydantic.dev/docs/httpx2/get-started/
+]
+
+# Uncomment for building projects
+# [build-system]
+# requires = ["uv_build>=0.13.9,<0.14"]
+# build-backend = "uv_build"
+
+# [tool.uv.build-backend]
+# wheel-exclude = ["*.bin", ".ref/", ".claude/", ".opencode/", ".codex/", ".agents/"]
+
+[tool.uv]
+exclude-newer = "10 days"
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "A",        # flake8-builtins
+    "ANN",      # flake8-annotations
+    "ARG",      # flake8-unused-arguments
+    "ASYNC",    # flake8-async
+    "S",        # flake8-bandit
+    "B",        # flake8-bugbear
+    "BLE001",   # flake8-blind-except
+    "C4",       # flake8-comprehensions
+    "DTZ",      # flake8-datetimez
+    "ISC",      # flake8-implicit-str-concat
+    "I001",     # unsorted-imports
+    "PIE",      # flake8-pie
+    "T2",       # flake8-print
+    "PYI",      # flake8-pyi (type hint stub files)
+    "RET5",     # flake8-return
+    "SIM",      # flake8-simplify
+    "TC",       # flake8-type-checking
+    "NPY",      # Numpy
+    "PD",       # pandas-vet
+    "N",        # pep8
+    "PERF",     # Perflint
+    "E",        # pycodestyle
+    "D",        # pydoclint
+    "PGH",      # pygrep-hooks
+    "UP",       # pyupgrade
+    "RUF",      # ruff
+    "TRY",      # tryceratops
+    "F",        # pyflakes
+    "LOG",      # flake8-logging
+    "G",        # flake8-logging-format
+    "PLE",      # Pylint
+    "PLW1510",  # subprocess-run-without-check
+    "PLW2901",  # redefined-loop-name
+    "FURB",     # refurb
+    "W505",     # pycodestyle: doc-line-too-long
+]
+ignore = [
+    "D212",    # allow multi-line docstring to start on new line
+    "D401",    # allow non-imperative mood docstrings
+    "D203",    # no new line before docstrings
+    "TRY003",  # allow long strings in exception messages
+]
+fixable = ["ALL"]
+
+[ruff.lint.pydocstyle]
+convention = "google"
+
+[ruff.lint.pycodestyle]
+max-doc-length = 100
+
+[ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["D", "S101"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "ruff>=0.17.5",
+    "ty>=0.0.104",
+]

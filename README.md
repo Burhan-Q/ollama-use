@@ -10,7 +10,7 @@ plain system font. Tooltip shows "ollama-use" on hover.
 ## Install (no clone)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Burhan-Q/ollama-use/HEAD/menubar-widget/install.sh \
+curl -fsSL https://github.com/Burhan-Q/ollama-use/raw/HEAD/menubar-widget/install.sh \
     | bash
 ```
 

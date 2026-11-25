@@ -21,16 +21,18 @@ and macOS 13+.
 
 ## Build from clone
 
+The source lives in `menubar-widget/`:
+
 ```sh
-./build.sh
+cd menubar-widget && ./build.sh
 ```
 
 ## Run
 
-The app reads `OLLAMA_API_KEY` from its environment:
+The app reads `OLLAMA_API_KEY` from its environment (from the repo root):
 
 ```sh
-OLLAMA_API_KEY=$(security find-generic-password -s ollama-api-key -w 2>/dev/null) ./OllamaUsage.app/Contents/MacOS/OllamaUsage
+OLLAMA_API_KEY=$(security find-generic-password -s ollama-api-key -w 2>/dev/null) menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage
 ```
 
 If launched from Finder, `LSUIElement` keeps it off the Dock; use
@@ -40,7 +42,7 @@ to GUI apps.
 CLI check (prints the values the widget would show, no GUI):
 
 ```sh
-./OllamaUsage.app/Contents/MacOS/OllamaUsage --once
+menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage --once
 ```
 
 ## Configuration (settings menu)

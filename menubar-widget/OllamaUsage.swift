@@ -37,30 +37,42 @@ enum DisplayItem: String, CaseIterable {
 
     var label: String {
         switch self {
-        case .sessionUsage: return "Session Usage"
-        case .sessionReset: return "Session Reset Time"
-        case .weeklyUsage: return "Weekly Usage"
-        case .weeklyReset: return "Weekly Reset Time"
+        case .sessionUsage: "Session Usage"
+        case .sessionReset: "Session Reset Time"
+        case .weeklyUsage: "Weekly Usage"
+        case .weeklyReset: "Weekly Reset Time"
         }
     }
-    var isSession: Bool { self == .sessionUsage || self == .sessionReset }
-    var isUsage: Bool { self == .sessionUsage || self == .weeklyUsage }
+
+    var isSession: Bool {
+        self == .sessionUsage || self == .sessionReset
+    }
+
+    var isUsage: Bool {
+        self == .sessionUsage || self == .weeklyUsage
+    }
 }
 
-// Color by percent REMAINING (only usage items are tinted).
+/// Color by percent REMAINING (only usage items are tinted).
 func color(forRemaining pct: Double) -> NSColor {
-    if pct >= 50 { return .systemGreen }
-    if pct >= 20 { return .systemOrange }
-    if pct >= 10 { return .systemPink }
+    if pct >= 50 {
+        return .systemGreen
+    }
+    if pct >= 20 {
+        return .systemOrange
+    }
+    if pct >= 10 {
+        return .systemPink
+    }
     return .systemRed
 }
 
 func makeSegment(_ item: DisplayItem, remaining: Double, countdownText: String) -> String {
     switch item {
-    case .sessionUsage: return "S \(Int(remaining.rounded()))%"
-    case .sessionReset: return "S \(countdownText)"
-    case .weeklyUsage: return "W \(Int(remaining.rounded()))%"
-    case .weeklyReset: return "W \(countdownText)"
+    case .sessionUsage: "S \(Int(remaining.rounded()))%"
+    case .sessionReset: "S \(countdownText)"
+    case .weeklyUsage: "W \(Int(remaining.rounded()))%"
+    case .weeklyReset: "W \(countdownText)"
     }
 }
 
@@ -74,7 +86,9 @@ final class State {
     var errorKind: String?
 
     var titleText: String {
-        if let k = errorKind, (session == nil && weekly == nil) { return "⚠︎ \(k)" }
+        if let k = errorKind, session == nil && weekly == nil {
+            return "⚠︎ \(k)"
+        }
         guard let s = session, let w = weekly else { return "⚠︎ no usage data" }
         let text: (DisplayItem) -> String = { item in
             makeSegment(item, remaining: item.isSession ? s.remaining_percent : w.remaining_percent,
@@ -93,7 +107,10 @@ let settingsDefaults = UserDefaults.standard
 func colorEnabled() -> Bool {
     settingsDefaults.object(forKey: "colors") == nil ? true : settingsDefaults.bool(forKey: "colors")
 }
-func setColorEnabled(_ on: Bool) { settingsDefaults.set(on, forKey: "colors") }
+
+func setColorEnabled(_ on: Bool) {
+    settingsDefaults.set(on, forKey: "colors")
+}
 
 func visibleItems() -> [DisplayItem] {
     let raw = settingsDefaults.stringArray(forKey: "items") ?? defaultItems.map(\.rawValue)
@@ -101,6 +118,7 @@ func visibleItems() -> [DisplayItem] {
     let items = raw.compactMap(DisplayItem.init(rawValue:)).filter { all.contains($0) }
     return items.isEmpty ? defaultItems : items
 }
+
 func setVisibleItems(_ items: [DisplayItem]) {
     settingsDefaults.set(items.map(\.rawValue), forKey: "items")
 }
@@ -118,8 +136,12 @@ func countdown(from resetsAt: String, now: Date = Date()) -> String {
     guard let target, target > now else { return "resetting…" }
     let secs = Int(target.timeIntervalSince(now))
     let d = secs / 86400, h = (secs % 86400) / 3600, m = (secs % 3600) / 60
-    if d > 0 { return "\(d)d \(h)h" }
-    if h > 0 { return "\(h)h \(m)m" }
+    if d > 0 {
+        return "\(d)d \(h)h"
+    }
+    if h > 0 {
+        return "\(h)h \(m)m"
+    }
     return "\(m)m"
 }
 
@@ -138,7 +160,7 @@ func fetchBalance(apiKey: String, completion: @escaping (Result<BalanceResponse,
                     return
                 }
                 do {
-                    completion(.success(try JSONDecoder().decode(BalanceResponse.self, from: data)))
+                    try completion(.success(JSONDecoder().decode(BalanceResponse.self, from: data)))
                 } catch {
                     completion(.failure(APIError(kind: "parse", retryAfter: nil)))
                 }
@@ -210,7 +232,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var timer: Timer?
     var pollRetryWorkItem: DispatchWorkItem?
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    func applicationDidFinishLaunching(_: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.button?.toolTip = "ollama-use"
         buildMenu()
@@ -249,14 +271,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             DispatchQueue.main.async {
                 guard let self else { return }
                 switch result {
-                case .success(let resp):
+                case let .success(resp):
                     self.state.session = resp.included?.session
                     self.state.weekly = resp.included?.weekly
                     self.state.lastUpdated = Date()
                     self.state.consecutiveFailures = 0
                     self.state.errorKind = nil
                     self.render()
-                case .failure(let e):
+                case let .failure(e):
                     self.state.consecutiveFailures += 1
                     if self.state.consecutiveFailures >= 2 || self.state.session == nil {
                         self.state.errorKind = e.kind
@@ -274,10 +296,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: Rendering
 
-    // (text, optional tint) segments for the status bar title.
+    /// (text, optional tint) segments for the status bar title.
     func segments() -> [(String, NSColor?)] {
         var segs: [(String, NSColor?)] = []
-        if let k = state.errorKind, (state.session == nil && state.weekly == nil) {
+        if let k = state.errorKind, state.session == nil, state.weekly == nil {
             return [("⚠︎ \(k)", NSColor.systemYellow)]
         }
         for item in visibleItems() {
@@ -291,7 +313,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     : ("W \(countdown(from: w.resets_at))", nil))
             }
         }
-        if segs.isEmpty { return [("⚠︎ no usage data", NSColor.systemYellow)] }
+        if segs.isEmpty {
+            return [("⚠︎ no usage data", NSColor.systemYellow)]
+        }
         return segs
     }
 
@@ -301,9 +325,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let font = NSFont.menuBarFont(ofSize: 0)
         let attr = NSMutableAttributedString()
         for (i, (text, tint)) in segs.enumerated() {
-            if i > 0 { attr.append(NSAttributedString(string: " | ", attributes: [.font: font])) }
+            if i > 0 {
+                attr.append(NSAttributedString(string: " | ", attributes: [.font: font]))
+            }
             var attrs: [NSAttributedString.Key: Any] = [.font: font]
-            if let tint { attrs[.foregroundColor] = tint }
+            if let tint {
+                attrs[.foregroundColor] = tint
+            }
             attr.append(NSAttributedString(string: text, attributes: attrs))
         }
         button.attributedTitle = attr
@@ -328,7 +356,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             df.timeStyle = .short
             menu.addItem(infoItem("Updated \(df.string(from: updated))"))
         }
-        if let err = state.errorKind, state.session == nil && state.weekly == nil {
+        if let err = state.errorKind, state.session == nil, state.weekly == nil {
             menu.addItem(infoItem("⚠︎ \(err)"))
         }
 
@@ -370,7 +398,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Refresh Now", action: #selector(refresh), keyEquivalent: "r"))
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
-        menu.items.forEach { if $0.target == nil, $0.action != #selector(NSApplication.terminate(_:)) { $0.target = self } }
+        for item in menu.items {
+            if item.target == nil, item.action != #selector(NSApplication.terminate(_:)) {
+                item.target = self
+            }
+        }
         statusItem.menu = menu
     }
 
@@ -382,7 +414,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: Menu actions
 
-    @objc func refresh() { poll() }
+    @objc func refresh() {
+        poll()
+    }
 
     @objc func toggleColors() {
         setColorEnabled(!colorEnabled())
@@ -391,7 +425,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func toggleItem(_ sender: NSMenuItem) {
         var items = visibleItems()
-        let item = DisplayItem(rawValue: sender.representedObject as! String)!
+        guard let raw = sender.representedObject as? String, let item = DisplayItem(rawValue: raw) else { return }
         if let idx = items.firstIndex(of: item) {
             guard items.count > 1 else { return }
             items.remove(at: idx)
@@ -432,7 +466,7 @@ func printOnce() {
     let sem = DispatchSemaphore(value: 0)
     fetchBalance(apiKey: key) { result in
         switch result {
-        case .success(let resp):
+        case let .success(resp):
             let st = State()
             st.session = resp.included?.session
             st.weekly = resp.included?.weekly
@@ -443,7 +477,7 @@ func printOnce() {
             if let w = resp.included?.weekly {
                 print("Weekly: \(Int(w.remaining_percent.rounded()))% left — resets in \(countdown(from: w.resets_at))")
             }
-        case .failure(let e):
+        case let .failure(e):
             print("error: \(e.kind)")
             exit(1)
         }
@@ -456,6 +490,7 @@ func printOnce() {
 if CommandLine.arguments.contains("--self-test") {
     selfTest()
 }
+
 if CommandLine.arguments.contains("--once") {
     printOnce()
 }

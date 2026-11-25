@@ -86,7 +86,7 @@ Put the above at `.git/hooks/pre-commit` and `chmod +x` it.
 ```sh
 export DYLD_FRAMEWORK_PATH=/Library/Developer/CommandLineTools/usr/lib
 swiftformat --lint .
-DYLD_FRAMEWORK_PATH=... swiftlint lint --strict menubar-widget
+swiftlint lint --strict menubar-widget
 ```
 
 ### Publish plan (future)

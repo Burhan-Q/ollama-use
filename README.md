@@ -10,7 +10,8 @@ plain system font. Tooltip shows "ollama-use" on hover.
 ## Install (no clone)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Burhan-Q/ollama-use/HEAD/menubar-widget/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Burhan-Q/ollama-use/HEAD/menubar-widget/install.sh \
+    | bash
 ```
 
 Downloads the source tarball, builds, installs to `/Applications`, and launches.
@@ -29,7 +30,8 @@ cd menubar-widget && ./build.sh
 The app reads `OLLAMA_API_KEY` from its environment (from the repo root):
 
 ```sh
-OLLAMA_API_KEY=$(security find-generic-password -s ollama-api-key -w 2>/dev/null) menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage
+OLLAMA_API_KEY=$(security find-generic-password -s ollama-api-key -w 2>/dev/null) \
+    menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage
 ```
 
 If launched from Finder, `LSUIElement` keeps it off the Dock; use `launchctl setenv OLLAMA_API_KEY <key>` so the

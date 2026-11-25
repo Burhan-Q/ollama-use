@@ -1,6 +1,26 @@
 # Contributing
 
-Single Swift project lives in `menubar-widget/`. Build, verification, and lint/format tooling below.
+Single Swift project lives in `menubar-widget/` (`Core.swift`: model,
+normalization, settings, self-tests; `main.swift`: menubar UI + entry).
+Build, verification, and lint/format tooling below.
+
+## Testing with mock data
+
+The endpoint serves two response shapes; both are supported — legacy plans
+(`included.session` / `included.weekly` percent limits) and current plans
+(`included.balance_usd` / `allowance_usd` + `period.until`, shown as one "S"
+limit — purchased credits are not counted).
+
+Point `OLLAMA_BALANCE_MOCK` at a JSON payload matching either shape to run the
+widget or `--once` against canned data (bypasses the network and the
+API-key requirement). An unreadable path fails loudly (`mock file unreadable`)
+rather than falling back to the network:
+
+```sh
+OLLAMA_BALANCE_MOCK=<path-to-mock.json> \
+    menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage --once
+# or launch the GUI with the same env var
+```
 
 ## Build & verify
 

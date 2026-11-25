@@ -1,14 +1,15 @@
+# Standard community values for Swift projects (SwiftLint defaults).
 line_length:
-  warning: 170
-  error: 220
+  warning: 120
+  error: 200
 identifier_name:
   min_length: 1
-  excluded: [balance_usd, remaining_percent, resets_at]
+  excluded: [balance_usd, allowance_usd, remaining_percent, resets_at]  # mirror JSON keys
 file_length:
-  warning: 550
-  error: 800
+  warning: 400
+  error: 500
 nesting:
   type_level: 3
 function_body_length:
-  warning: 60
+  warning: 50
 force_cast: warning

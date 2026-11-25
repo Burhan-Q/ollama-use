@@ -1,0 +1,14 @@
+line_length:
+  warning: 170
+  error: 220
+identifier_name:
+  min_length: 1
+  excluded: [balance_usd, remaining_percent, resets_at]
+file_length:
+  warning: 550
+  error: 800
+nesting:
+  type_level: 3
+function_body_length:
+  warning: 60
+force_cast: warning

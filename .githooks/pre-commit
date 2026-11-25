@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Pre-commit: SwiftFormat (auto-fix) + SwiftLint (gate) on staged Swift files.
+# Project-local (not shared via core.hooksPath) for ollama-use only.
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+export DYLD_FRAMEWORK_PATH=/Library/Developer/CommandLineTools/usr/lib
+export PATH="$HOME/.local/bin:$PATH"
+
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.swift')
+[ -z "$files" ] && exit 0
+
+# Format in place; restage files that SwiftFormat rewrote.
+swiftformat --quiet --swiftversion 6 $files || exit 1
+git add -- $files
+
+# Lint; fail on anything (warnings included so they don't accumulate).
+swiftlint lint --strict --quiet -- $files

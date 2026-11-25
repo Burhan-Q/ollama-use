@@ -43,6 +43,7 @@ docs/superpowers/
 *.engine
 *.onnx
 *.gguf
+*.app
 
 # --- Node (JS/TS) ---
 node_modules/

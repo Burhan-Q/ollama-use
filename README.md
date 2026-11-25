@@ -1,6 +1,6 @@
 # OllamaUsage — macOS menu bar widget
 
-Shows your Ollama Cloud legacy-plan usage in the macOS menu bar: session % remaining, weekly % remaining, and reset
+Shows your [Ollama Cloud](https://ollama.com) legacy-plan usage in the macOS menu bar: session % remaining, weekly % remaining, and reset
 countdowns.
 
 Menu bar text (default): `S 89% | S 1h 54m` — session % remaining + session reset countdown, `|`-separated.

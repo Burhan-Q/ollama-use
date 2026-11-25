@@ -22,10 +22,16 @@ if [[ "$(sw_vers -productVersion | cut -d. -f1)" -lt 13 ]]; then
   exit 1
 fi
 
-echo "Downloading ${REPO} (menubar-widget/) …"
-curl -fsSL "$TARBALL" -o "$TMP/repo.tar.gz"
-tar -xzf "$TMP/repo.tar.gz" -C "$TMP"
-DIR="$(find "$TMP" -maxdepth 1 -type d -name '*ollama-use*' | head -1)/menubar-widget"
+# Local rebuild: works when run next to the sources (menubar-widget/).
+if [[ -f "OllamaUsage.swift" && -f "build.sh" ]]; then
+  DIR="$(pwd)"
+else
+  # Remote install: fetch the parent-repo tarball and locate menubar-widget/.
+  echo "Downloading ${REPO} (menubar-widget/) …"
+  curl -fsSL "$TARBALL" -o "$TMP/repo.tar.gz"
+  tar -xzf "$TMP/repo.tar.gz" -C "$TMP"
+  DIR="$(find "$TMP" -maxdepth 1 -type d -name '*ollama-use*' | head -1)/menubar-widget"
+fi
 
 echo "Building …"
 bash "$DIR/build.sh"

@@ -1,23 +1,30 @@
-# OllamaUsage — macOS menu bar widget
+# OllamaUsage - A macOS menu bar widget
 
 Shows your [Ollama Cloud](https://ollama.com) legacy-plan usage in the macOS menu bar: session % remaining, weekly % remaining, and reset
 countdowns.
 
-Menu bar text (default): `S 89% | S 1h 54m` — session % remaining + session reset countdown, `|`-separated.
-Usage values are colored (green ≥50, orange 20–50, pink 10–20, red <10 remaining) with "Show Colors" toggled on; off =
-plain system font. Tooltip shows "ollama-use" on hover.
+## Menubar Widget
 
-## Install (no clone)
+| Credit Subscription | Legacy Subscription |
+| :-----------------: | :-----------------: |
+| <img height="30" alt="image" src="https://github.com/user-attachments/assets/6be18957-a3b5-469d-8e1f-53e9524de3b9" /> | <img height="30" alt="image" src="https://github.com/user-attachments/assets/9c5d41a1-eaa5-4661-a20d-9672c158646b" /> |
+
+## Installation
+
+### Prerequisites
+
+Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+. Set environment variable `OLLAMA_API_KEY`.
+
+### Direct from GitHub (recommended)
+
+Downloads the source tarball, builds, installs to `/Applications`, and launches.
 
 ```sh
 curl -fsSL https://github.com/Burhan-Q/ollama-use/raw/HEAD/menubar-widget/install.sh \
     | bash
 ```
 
-Downloads the source tarball, builds, installs to `/Applications`, and launches.
-Requires Xcode Command Line Tools (`xcode-select --install`) and macOS 13+.
-
-## Build from clone
+## Clone Repo & Build
 
 The source lives in `menubar-widget/`:
 
@@ -25,38 +32,56 @@ The source lives in `menubar-widget/`:
 cd menubar-widget && ./build.sh
 ```
 
-## Run
+### Run
 
-The app reads `OLLAMA_API_KEY` from its environment (from the repo root):
+From the repo root:
 
 ```sh
+# OLLAMA_API_KEY already set in environment
+
+# Run in foreground
+menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage
+
+# Run in background
+menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage &
+```
+
+```sh
+# Fetch API Key using Apple Keychain
 OLLAMA_API_KEY=$(security find-generic-password -s ollama-api-key -w 2>/dev/null) \
     menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage
 ```
 
-If launched from Finder, `LSUIElement` keeps it off the Dock; use `launchctl setenv OLLAMA_API_KEY <key>` so the
-environment is visible to GUI apps.
+**NOTE**: If launched from Finder, `LSUIElement` keeps it off the Dock; use `launchctl setenv OLLAMA_API_KEY <key>` 
+so the environment is visible to GUI apps.
 
-CLI check (prints the values the widget would show, no GUI):
+If needed, kill process using:
+
+```sh
+pkill -f OllamaUsage
+```
+
+### CLI check
+
+Prints the values the widget would show, no menubar widget launched.
 
 ```sh
 menubar-widget/OllamaUsage.app/Contents/MacOS/OllamaUsage --once
 ```
 
-## Configuration (settings menu)
+## Configuration Options
+
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/00ed2b0d-a636-4093-b831-a18708d86ef1" />
 
 Defaults persist in `~/Library/Preferences/menubar.ollama-usage.plist` (your domain defaults:
 `defaults read menubar.ollama-usage`).
 
-- **Show Colors** — color usage % by remaining (≥50 green, 20–50 orange, 10–20 pink, <10 red).
-  Off = system font color.
-- **Display items** — toggle up to any two of: Session Usage, Session Reset Time, Weekly Usage, Weekly Reset Time (at
-  least one). Default: Session Usage | Session Reset Time.
-- **Update Interval** — 30s / 1m / 5m / 15m / 30m / 60m min (default 5m; API allows 10 req/min).
-  Changes apply immediately.
-  Also settable via `defaults write menubar.ollama-usage intervalSeconds <n>` (clamped 30–3600s), or
-  `OLLAMA_USAGE_INTERVAL=<seconds>` env var (takes precedence).
-- **Launch at Login** — registers the app with the macOS login items (app must be in `/Applications`).
+| Setting | Options | Default | Description |
+| ------- | ------- | ------- | ----------- |
+| **Show Colors** | ON/OFF | ON | Color usage by %-remaining<br>  ≥50 GREEN<br>  20–50% ORANGE<br>  10–20% PINK<br>  <10% RED; when `OFF` uses system font color. |
+| **Display items** | Session Usage<br>Session Reset Time<br>Weekly Usage<br>Weekly Reset Time | Session Usage \| Session Reset Time | Select up to any two. |
+| **Update Interval** | 30s<br>1m<br>5m<br>15m<br>30m<br>60m | 5m | Note: API allows 10 req/min, override with `OLLAMA_USAGE_INTERVAL=<seconds>` | 
+| **Launch at Login** | ON/OFF | OFF | registers the app with the macOS login items (app must be in `/Applications`). |
 
 ## Troubleshooting
 

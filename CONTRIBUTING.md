@@ -1,7 +1,6 @@
 # Contributing
 
-Single Swift project lives in `menubar-widget/`. Build, verification, and
-lint/format tooling below.
+Single Swift project lives in `menubar-widget/`. Build, verification, and lint/format tooling below.
 
 ## Build & verify
 
@@ -14,10 +13,11 @@ OLLAMA_API_KEY='<key>' OllamaUsage.app/Contents/MacOS/OllamaUsage --once  # live
 
 ## Tooling (check on every commit)
 
-- **SwiftFormat** — auto-fixes style. Runs in the pre-commit hook.
-- **SwiftLint** — rule gate. Runs in the pre-commit hook in `--strict`
-  (warnings fail the commit). Tune `.swiftlint.yml` instead of committing
-  warnings.
+- **SwiftFormat** — auto-fixes style.
+  Runs in the pre-commit hook.
+- **SwiftLint** — rule gate.
+  Runs in the pre-commit hook in `--strict` (warnings fail the commit).
+  Tune `.swiftlint.yml` instead of committing warnings.
 
 Configs are at the repo root: `.swiftformat`, `.swiftlint.yml`.
 
@@ -36,26 +36,26 @@ xattr -dr com.apple.quarantine ~/.local/bin/swiftlint 2>/dev/null || true
 export DYLD_FRAMEWORK_PATH=/Library/Developer/CommandLineTools/usr/lib
 ```
 
-If you have full Xcode installed, plain `brew install swiftlint` instead — then
-the `DYLD_FRAMEWORK_PATH` export is unnecessary.
+If you have full Xcode installed, plain `brew install swiftlint` instead — then the `DYLD_FRAMEWORK_PATH` export is
+unnecessary.
 
 ### Install the hook
 
-The canonical hook is tracked at `.githooks/pre-commit`; install it into your
-own `.git/hooks/` (re-run after a fresh clone or on another machine):
+The canonical hook is tracked at `.githooks/pre-commit`; install it into your own `.git/hooks/` (re-run after a fresh
+clone or on another machine):
 
 ```sh
 cp .githooks/pre-commit .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
-Why not `git config core.hooksPath .githooks` globally? Both work; the copy
-keeps this repo's hook project-local so it doesn't affect other repos on the
-same clone worktree. Use `core.hooksPath` if you prefer.
+Why not `git config core.hooksPath .githooks` globally?
+Both work; the copy keeps this repo's hook project-local so it doesn't affect other repos on the same clone worktree.
+Use `core.hooksPath` if you prefer.
 
-Committing: hook runs SwiftFormat (restages files it rewrites) and SwiftLint
-`--strict` on **staged `.swift` files only**. Anything failing blocks the
-commit — fix or tune config. Non-Swift commits are untouched.
+Committing: hook runs SwiftFormat (restages files it rewrites) and SwiftLint `--strict` on **staged `.swift` files
+only**. Anything failing blocks the commit — fix or tune config.
+Non-Swift commits are untouched.
 
 ### Hook script
 
@@ -91,10 +91,9 @@ DYLD_FRAMEWORK_PATH=... swiftlint lint --strict menubar-widget
 
 ### Publish plan (future)
 
-- GitHub repo `ollama-use` (public) → `install.sh` one-liner becomes live
-  (path placeholder in `menubar-widget/install.sh`).
-- GitHub Actions PR check: lint + format gate on PRs touching
-  `menubar-widget/**` — macOS runner, `brew install swiftformat`, SwiftLint
-  from release zip (or plain brew if full Xcode image), run both tools in
-  `--strict`/`--lint` mode. Details in `.ref/plans/` (not committed).
-
+- GitHub repo `ollama-use` (public) → `install.sh` one-liner becomes live (path placeholder in
+  `menubar-widget/install.sh`).
+- GitHub Actions PR check: lint + format gate on PRs touching `menubar-widget/**` — macOS runner,
+  `brew install swiftformat`, SwiftLint from release zip (or plain brew if full Xcode image), run both tools in
+  `--strict`/`--lint` mode.
+  Details in `.ref/plans/` (not committed).

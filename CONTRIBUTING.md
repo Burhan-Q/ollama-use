@@ -96,4 +96,3 @@ DYLD_FRAMEWORK_PATH=... swiftlint lint --strict menubar-widget
 - GitHub Actions PR check: lint + format gate on PRs touching `menubar-widget/**` — macOS runner,
   `brew install swiftformat`, SwiftLint from release zip (or plain brew if full Xcode image), run both tools in
   `--strict`/`--lint` mode.
-  Details in `.ref/plans/` (not committed).

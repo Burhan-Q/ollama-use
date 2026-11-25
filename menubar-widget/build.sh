@@ -7,7 +7,7 @@ APP=OllamaUsage.app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS"
 
-swiftc -O OllamaUsage.swift -o "$APP/Contents/MacOS/OllamaUsage"
+swiftc -O Core.swift main.swift -o "$APP/Contents/MacOS/OllamaUsage"
 
 cat > "$APP/Contents/Info.plist" <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>

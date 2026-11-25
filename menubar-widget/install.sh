@@ -23,7 +23,7 @@ if [[ "$(sw_vers -productVersion | cut -d. -f1)" -lt 13 ]]; then
 fi
 
 # Local rebuild: works when run next to the sources (menubar-widget/).
-if [[ -f "OllamaUsage.swift" && -f "build.sh" ]]; then
+if [[ -f "main.swift" && -f "build.sh" ]]; then
   DIR="$(pwd)"
 else
   # Remote install: fetch the parent-repo tarball and locate menubar-widget/.

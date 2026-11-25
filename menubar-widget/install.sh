@@ -4,7 +4,7 @@
 # (Update REPO if the repo moves.)
 set -euo pipefail
 
-REPO="burhan/ollama-use"
+REPO="Burhan-Q/ollama-use"
 TARBALL="https://codeload.github.com/${REPO}/tar.gz/HEAD"
 APP_DEST="/Applications/OllamaUsage.app"
 
